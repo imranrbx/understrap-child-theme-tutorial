@@ -118,12 +118,13 @@ function shortcode_for_projets() {
 			'id' => 1,
 			'title' => 'default Title',
 		), $atts, 'show-project');
-
-		$data = "<figure>" . get_the_post_thumbnail($atts['id'], 'thumbnail') . "</figure>";
-		$data .= "<p>" . get_the_term_list($atts['id'], 'project_type') . "</p>";
-		$data .= "<h2>" . get_the_title($atts['id']) . "</h2>";
-		$data .= "<p>" . get_the_excerpt($atts['id']) . "</p>";
-		$data .= "<a href='" . get_the_permalink($atts['id']) . "' class='btn btn-secondary understrap-read-more-link waves-effect waves-light'> Read More</a>";
+		$post = get_post($atts['id'], OBJECT, 'raw');
+		// return json_encode($post);
+		$data = "<figure>" . get_the_post_thumbnail($post->ID, 'thumbnail') . "</figure>";
+		$data .= "<p>" . get_the_term_list($atts['id'], 'project_type', '', ' - ', '') . "</p>";
+		$data .= "<h2>" . $post->post_title . "</h2>";
+		$data .= "<p>" . $post->post_excerpt . "</p>";
+		$data .= "<a href='" . get_the_permalink($post->ID) . "' class='btn btn-secondary understrap-read-more-link waves-effect waves-light'> Read More...</a>";
 		wp_reset_query();
 		return $data;
 	});
