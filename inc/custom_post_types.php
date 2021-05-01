@@ -54,7 +54,7 @@ function cptui_register_my_cpts_projects() {
 		),
 		'query_var' => true,
 		'menu_icon' => 'dashicons-format-aside',
-		'supports' => array('title', 'thumbnail', 'excerpt', 'author'),
+		'supports' => array('title', 'thumbnail', 'excerpt', 'author', 'custom-fields'),
 		'show_in_graphql' => false,
 	);
 
