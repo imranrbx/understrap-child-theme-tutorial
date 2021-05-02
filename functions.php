@@ -1,6 +1,7 @@
 <?php
 require_once __DIR__ . '/frontend-registration/frontend-registration-form.php';
 require_once __DIR__ . '/inc/custom_post_types.php';
+require_once __DIR__ . '/inc/custom_meta_boxes.php';
 
 add_action(
 	'init',
@@ -32,7 +33,7 @@ add_filter('login_url', 'wpdev_my_login_page', 10, 3);
 function wpdev_my_login_page($login_url, $redirect, $force_reauth) {
 	$url = wp_parse_url($login_url, -1);
 	$login_page = home_url('/login');
-	if (isset($url) && $url['path'] == '/wp-login.php' && $_GET['action'] == 'login') {
+	if (isset($url['path']) && $url['path'] == '/wp-login.php' && isset($_GET['action']) && $_GET['action'] == 'login') {
 		wp_safe_redirect('/login', 302, 'WordPress');
 	}
 	if ($url['path'] == '/wp-login.php' && $_GET['action'] == 'register') {
