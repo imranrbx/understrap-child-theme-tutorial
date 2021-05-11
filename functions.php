@@ -5,6 +5,7 @@ define('WPDEV_ACF_URL', get_stylesheet_directory_uri() . '/inc/acf-lite/');
 require_once __DIR__ . '/frontend-registration/frontend-registration-form.php';
 require_once __DIR__ . '/inc/custom_post_types.php';
 require_once __DIR__ . '/inc/custom_meta_boxes.php';
+
 require_once WPDEV_ACF_PATH . 'acf.php';
 add_filter('acf/settings/url', 'wpdev_acf_settings_url');
 function wpdev_acf_settings_url($url) {
@@ -138,3 +139,49 @@ function shortcode_for_projets() {
         return $data;
     });
 }
+add_filter('acf/settings/show_admin', 'wpdev_acf_settings_show_admin');
+function wpdev_acf_settings_show_admin($show_admin) {
+    return false;
+}
+if (function_exists('acf_add_local_field_group')):
+
+    acf_add_local_field_group(array(
+        'key' => 'group_6099f9a198159',
+        'title' => 'Project Options',
+        'fields' => array(
+            array(
+                'key' => 'field_6099fa4787a7b',
+                'label' => 'Background Color',
+                'name' => 'background_color',
+                'type' => 'color_picker',
+                'instructions' => 'Use the color picker to choose a background for a specific project type.',
+                'required' => 0,
+                'conditional_logic' => 0,
+                'wrapper' => array(
+                    'width' => '100',
+                    'class' => 'form-control',
+                    'id' => '',
+                ),
+                'default_value' => '#FFF',
+            ),
+        ),
+        'location' => array(
+            array(
+                array(
+                    'param' => 'post_type',
+                    'operator' => '==',
+                    'value' => 'projects',
+                ),
+            ),
+        ),
+        'menu_order' => 0,
+        'position' => 'normal',
+        'style' => 'default',
+        'label_placement' => 'top',
+        'instruction_placement' => 'field',
+        'hide_on_screen' => '',
+        'active' => true,
+        'description' => '',
+    ));
+
+endif;
