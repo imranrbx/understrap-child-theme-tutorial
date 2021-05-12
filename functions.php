@@ -5,8 +5,8 @@ define('WPDEV_ACF_URL', get_stylesheet_directory_uri() . '/inc/acf-lite/');
 require_once __DIR__ . '/frontend-registration/frontend-registration-form.php';
 require_once __DIR__ . '/inc/custom_post_types.php';
 require_once __DIR__ . '/inc/custom_meta_boxes.php';
-
 require_once WPDEV_ACF_PATH . 'acf.php';
+
 add_filter('acf/settings/url', 'wpdev_acf_settings_url');
 function wpdev_acf_settings_url($url) {
     return WPDEV_ACF_URL;
@@ -45,7 +45,7 @@ function wpdev_my_login_page($login_url, $redirect, $force_reauth) {
     if (isset($url['path']) && $url['path'] == '/wp-login.php' && isset($_GET['action']) && $_GET['action'] == 'login') {
         wp_safe_redirect('/login', 302, 'WordPress');
     }
-    if ($url['path'] == '/wp-login.php' && $_GET['action'] == 'register') {
+    if ($url['path'] == '/wp-login.php' && isset($_GET['action']) && $_GET['action'] == 'register') {
         wp_safe_redirect('/register', 302, 'WordPress');
     }
     $login_url = add_query_arg('redirect_to', $redirect, $login_page);
@@ -139,7 +139,7 @@ function shortcode_for_projets() {
         return $data;
     });
 }
-add_filter('acf/settings/show_admin', 'wpdev_acf_settings_show_admin');
+// add_filter('acf/settings/show_admin', 'wpdev_acf_settings_show_admin');
 function wpdev_acf_settings_show_admin($show_admin) {
     return false;
 }
