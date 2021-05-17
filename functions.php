@@ -6,7 +6,7 @@ require_once __DIR__ . '/frontend-registration/frontend-registration-form.php';
 require_once __DIR__ . '/inc/custom_post_types.php';
 require_once __DIR__ . '/inc/custom_meta_boxes.php';
 require_once WPDEV_ACF_PATH . 'acf.php';
-
+require_once __DIR__ . '/inc/required-plugins.php';
 add_filter('acf/settings/url', 'wpdev_acf_settings_url');
 function wpdev_acf_settings_url($url) {
     return WPDEV_ACF_URL;
