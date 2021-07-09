@@ -30,7 +30,7 @@ function wpdev_cf7_enqueue_scripts() {
     wp_deregister_style('understrap-styles');
     wp_enqueue_style('understrap-child-styles', get_stylesheet_directory_uri() . '/assets/css/bootstrap.min.css', array(), false, 'all');
     wp_enqueue_style('mdb-bootstrap', get_stylesheet_directory_uri() . '/assets/css/mdb.min.css', array('understrap-child-styles'), false, 'all');
-    wp_enqueue_script('mdb-js', get_stylesheet_directory_uri() . '/assets/js/mdb.min.js', array('jquery'), '4.19.2', true);
+    // wp_enqueue_script('mdb-js', get_stylesheet_directory_uri() . '/assets/js/mdb.min.js', array('jquery'), '4.19.2', true);
     wp_enqueue_script('cf7-main', get_stylesheet_directory_uri() . '/assets/js/main.js', array(), '1.0', true);
     wp_localize_script('cf7-main', 'ajax_obj', array(
         'ajaxurl' => admin_url('admin-ajax.php'),
@@ -185,3 +185,34 @@ if (function_exists('acf_add_local_field_group')):
     ));
 
 endif;
+function wpdev_add_extra_menu_item_fields($item_id) {
+    wp_nonce_field(-1, '_wpnonce', true, true);
+    $checked = get_post_meta($item_id, "_conditional_menu_$item_id", true) ?? '';
+    ?>
+    <p><label for="conditional-menu-item"><input type="checkbox" name="conditional_menu_<?=$item_id?>" id="conditional-menu-item" <?=$checked?>/>Conditional Menu</label></p>
+    <?php
+}
+function wpdev_update_nav_menu_item($menu_id, $item_id) {
+    if (!wp_verify_nonce($_POST['_wpnonce'], -1)) {
+        return $menu_id;
+    }
+    if (isset($_POST["conditional_menu_$item_id"])) {
+        update_post_meta($item_id, "_conditional_menu_$item_id", 'checked');
+    } else {
+        delete_post_meta($item_id, "_conditional_menu_$item_id");
+    }
+}
+
+add_action('wp_nav_menu_item_custom_fields', 'wpdev_add_extra_menu_item_fields', 10);
+add_action('wp_update_nav_menu_item', 'wpdev_update_nav_menu_item', 10, 2);
+
+add_action('after_setup_theme', 'wpdev_register_secondary_menu');
+function wpdev_register_secondary_menu() {
+    register_nav_menu('secondary', 'Menu for LoggedIn Users');
+
+}
+add_filter('wp_nav_menu_args', 'wpdev_create_dynamic_menu');
+function wpdev_create_dynamic_menu($location) {
+    $location['theme_location'] = is_user_logged_in() ? 'secondary' : 'primary';
+    return $location;
+}
