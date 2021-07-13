@@ -30,6 +30,7 @@ function wpdev_cf7_enqueue_scripts() {
     wp_deregister_style('understrap-styles');
     wp_enqueue_style('understrap-child-styles', get_stylesheet_directory_uri() . '/assets/css/bootstrap.min.css', array(), false, 'all');
     wp_enqueue_style('mdb-bootstrap', get_stylesheet_directory_uri() . '/assets/css/mdb.min.css', array('understrap-child-styles'), false, 'all');
+    wp_enqueue_style('understrap-child', get_stylesheet_directory_uri() . '/style.css', array(), false, 'all');
     // wp_enqueue_script('mdb-js', get_stylesheet_directory_uri() . '/assets/js/mdb.min.js', array('jquery'), '4.19.2', true);
     wp_enqueue_script('cf7-main', get_stylesheet_directory_uri() . '/assets/js/main.js', array(), '1.0', true);
     wp_localize_script('cf7-main', 'ajax_obj', array(
@@ -189,7 +190,7 @@ function wpdev_add_extra_menu_item_fields($item_id) {
     wp_nonce_field(-1, '_wpnonce', true, true);
     $checked = get_post_meta($item_id, "_conditional_menu_$item_id", true) ?? '';
     ?>
-    <p><label for="conditional-menu-item"><input type="checkbox" name="conditional_menu_<?=$item_id?>" id="conditional-menu-item" <?=$checked?>/>Conditional Menu</label></p>
+    <p class="description description-wide"><label for="conditional-menu-item"><input type="checkbox" name="conditional_menu_<?=$item_id?>" id="conditional-menu-item" <?=$checked?>/>Conditional Menu</label></p>
     <?php
 }
 function wpdev_update_nav_menu_item($menu_id, $item_id) {
@@ -213,6 +214,28 @@ function wpdev_register_secondary_menu() {
 }
 add_filter('wp_nav_menu_args', 'wpdev_create_dynamic_menu');
 function wpdev_create_dynamic_menu($location) {
+    require_once get_stylesheet_directory() . '/inc/Understrap_Child_Walker_Nav_Menu.php';
     $location['theme_location'] = is_user_logged_in() ? 'secondary' : 'primary';
+    $location['walker'] = new Understrap_Child_Walker_Nav_Menu();
+    $location['menu_class'] = "snip1490";
     return $location;
+}
+// add_filter('nav_menu_link_attributes', 'wpdev_nav_menu_link_attributes', 10, 2);
+// add_filter('nav_menu_css_class', 'wpdev_nav_menu_css_class', 10, 2);
+// add_filter('nav_menu_item_args', 'wpdev_nav_menu_item_args', 10, 2);
+function wpdev_nav_menu_css_class($classes, $item) {
+    $condition = get_post_meta($item->ID, "_conditional_menu_$item->ID", true);
+    if ($condition) {
+        $classes[] = 'd-none';
+    }
+    return $classes;
+}
+function wpdev_nav_menu_item_args($args, $item) {
+    $condition = get_post_meta($item->ID, "_conditional_menu_$item->ID", true);
+    if ($condition) {
+        $item = [];
+        $args = [];
+    }
+    return $args;
+
 }
