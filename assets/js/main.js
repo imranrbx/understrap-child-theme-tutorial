@@ -12,9 +12,13 @@ $(".hover").mouseleave(
     $(this).removeClass("hover");
   }
 );
+$(".megamenu").on("click", function(e) {
+        e.stopPropagation();
+    });
 });
+
 function get_response(action, values){
-    $.ajax({
+    jQuery.ajax({
         url: ajax_obj.ajaxurl,
         method: 'POST',
         data:{
@@ -22,6 +26,6 @@ function get_response(action, values){
             value: values,
             wpnonce: ajax_obj.wpnonce,
         },
-        success: (res) => $('#result').html(res.data)
+        success: (res) => jQuery('#result').html(res.data)
     });
 }

@@ -214,10 +214,12 @@ function wpdev_register_secondary_menu() {
 }
 add_filter('wp_nav_menu_args', 'wpdev_create_dynamic_menu');
 function wpdev_create_dynamic_menu($location) {
-    require_once get_stylesheet_directory() . '/inc/Understrap_Child_Walker_Nav_Menu.php';
-    $location['theme_location'] = is_user_logged_in() ? 'secondary' : 'primary';
-    $location['walker'] = new Understrap_Child_Walker_Nav_Menu();
-    $location['menu_class'] = "snip1490";
+    // require_once get_stylesheet_directory() . '/inc/Understrap_Child_Walker_Nav_Menu.php';
+    require_once get_stylesheet_directory() . '/inc/class-wp-megamenu-walkernav.php';
+    // $location['theme_location'] = is_user_logged_in() ? 'secondary' : 'primary';
+    $location['walker'] = new Wpdev_Megamenu_WalkerNav();
+
+    // $location['menu_class'] = "snip1490";
     return $location;
 }
 // add_filter('nav_menu_link_attributes', 'wpdev_nav_menu_link_attributes', 10, 2);
