@@ -39,7 +39,7 @@ function wpdev_cf7_enqueue_scripts() {
     ));
 }
 
-add_filter('login_url', 'wpdev_my_login_page', 10, 3);
+// add_filter('login_url', 'wpdev_my_login_page', 10, 3);
 function wpdev_my_login_page($login_url, $redirect, $force_reauth) {
     $url = wp_parse_url($login_url, -1);
     $login_page = home_url('/login');
@@ -239,5 +239,33 @@ function wpdev_nav_menu_item_args($args, $item) {
         $args = [];
     }
     return $args;
-
 }
+// 'show_user_profile',
+// 'edit_user_profile',
+// 'personal_options_update',
+// 'edit_user_profile_update',
+add_action( 'show_user_profile', 'wpdev_add_extra_user_fields', 10 );
+add_action( 'edit_user_profile', 'wpdev_add_extra_user_fields', 10 );
+function wpdev_add_extra_user_fields($user){
+    ?>
+    <h3>User Birthday</h3>
+    <table class="form-table">
+        <tbody>
+            <tr>
+                 <th>User Birthday</th>
+                 <td><input type="date" name="user_birthday" class="regular-text" pattern="(19[0-9][0-9]|20[0-9][0-9])-(1[0-2]|0[1-9])-(3[01]|[21][0-9]|0[1-9])"value="<?= get_user_meta( $user->ID, '_user_birthday', true ); ?>" id=""></td>
+            </tr>
+           
+        </tbody>
+    </table>
+    <?php
+}
+add_action( 'personal_options_update', 'wpdev_update_user_profile', 10 );
+add_action( 'edit_user_profile_update', 'wpdev_update_user_profile' , 10 );
+function wpdev_update_user_profile($user_id){
+   update_user_meta( $user_id, '_user_birthday', $_POST['user_birthday'] );
+}
+
+
+
+
